@@ -9,11 +9,12 @@
   --accent: #4de4c2;
   --accent-strong: #9ff7c5;
   --muted: rgba(240, 250, 252, 0.6);
-  --panel: rgba(20, 32, 36, 0.82);
+  /* Keep panels/modals readable (avoid “text over text” translucency). */
+  --panel: #142024;
   --panel-border: rgba(77, 228, 194, 0.2);
   --bg: #0b1114;
   --text: #eef6f7;
-  --card: rgba(10, 18, 20, 0.7);
+  --card: #0a1214;
   --chip: rgba(77, 228, 194, 0.12);
   --workbench-height: 52vh;
   --workbench-collapsed-height: 56px;
@@ -30,11 +31,11 @@ body[data-theme='light'] {
   --accent: #3b7bff;
   --accent-strong: #6ca3ff;
   --muted: rgba(29, 34, 54, 0.6);
-  --panel: rgba(245, 248, 255, 0.9);
+  --panel: #f5f8ff;
   --panel-border: rgba(59, 123, 255, 0.22);
   --bg: #f5f7fb;
   --text: #111827;
-  --card: rgba(255, 255, 255, 0.9);
+  --card: #ffffff;
   --chip: rgba(59, 123, 255, 0.12);
   background: radial-gradient(circle at top, #f5f9ff 0%, #f5f7fb 70%, #eef2ff 100%);
 }
@@ -44,10 +45,10 @@ body[data-theme='light'] {
 }
 
 .app-shell {
-  padding: 32px 36px 24px;
+  padding: 22px 24px 18px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .app-shell.workbench-open {
@@ -62,7 +63,7 @@ body[data-theme='light'] {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 32px;
+  gap: 20px;
 }
 
 .eyebrow {
@@ -75,7 +76,7 @@ body[data-theme='light'] {
 
 h1 {
   margin: 0 0 8px;
-  font-size: 42px;
+  font-size: 36px;
 }
 
 .subhead {
@@ -87,7 +88,7 @@ h1 {
 .top-actions {
   display: flex;
   align-items: flex-end;
-  gap: 16px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -534,22 +535,22 @@ body[data-theme='light'] .file-row.active {
 .main {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
-  gap: 24px;
+  gap: 16px;
 }
 
 .panel {
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: 20px;
-  padding: 18px;
+  padding: 14px;
   box-shadow: 0 20px 40px rgba(2, 11, 16, 0.45);
-  backdrop-filter: blur(18px);
+  /* No blur: it reduces legibility for dense UIs. */
   min-height: 420px;
 }
 
@@ -557,7 +558,7 @@ body[data-theme='light'] .file-row.active {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   gap: 12px;
 }
 
@@ -586,18 +587,29 @@ textarea {
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid rgba(150, 210, 215, 0.2);
-  background: rgba(5, 11, 14, 0.55);
+  background: rgba(5, 11, 14, 0.92);
   color: var(--text);
   font-size: 14px;
 }
 
+body[data-theme='light'] input,
+body[data-theme='light'] textarea {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(59, 123, 255, 0.2);
+}
+
 select.role-select {
-  background: rgba(5, 11, 14, 0.55);
+  background: rgba(5, 11, 14, 0.92);
   color: var(--text);
   border: 1px solid rgba(150, 210, 215, 0.2);
   border-radius: 999px;
   padding: 6px 10px;
   font-size: 12px;
+}
+
+body[data-theme='light'] select.role-select {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(59, 123, 255, 0.2);
 }
 
 body[data-theme='light'] select.role-select {
@@ -1115,16 +1127,18 @@ body[data-theme='light'] .stream-badge {
 }
 
 .modal {
+  /* Solid modal: avoid background text showing through. */
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: 18px;
-  padding: 24px;
+  padding: 18px;
   max-width: 420px;
   width: 100%;
   color: var(--text);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55);
 }
 
 .modal.modal-wide {
