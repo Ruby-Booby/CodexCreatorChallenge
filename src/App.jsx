@@ -4863,296 +4863,296 @@ function App() {
               </div>
               <p className="muted">Tip: the Home panel shows the live stream + spiderweb graph.</p>
 
-              <details className="insight-block">
-                <summary className="block-summary">
-                  <strong>Collaboration Inbox</strong>
-                  <span className="muted">{(activeProject?.joinRequests || []).length} pending</span>
-                </summary>
-                {(activeProject?.joinRequests || []).length === 0 ? (
-                  <p className="muted">No pending requests.</p>
-                ) : (
-                  <div className="requests">
-                    {activeProject.joinRequests.map((req) => (
-                      <div key={req.id} className="request-item">
-                        <div>
-                          <strong>{req.name}</strong>
-                          <span>{req.code}</span>
-                        </div>
-                        <div className="buttons">
-                          <select
-                            className="role-select"
-                            value={req.role || 'viewer'}
-                            onChange={(e) => {
-                              const role = e.target.value
-                              setProjects((prev) =>
-                                prev.map((p) =>
-                                  p.id === activeProject.id
-                                    ? {
-                                        ...p,
-                                        joinRequests: p.joinRequests.map((r) =>
-                                          r.id === req.id ? { ...r, role } : r
-                                        )
-                                      }
-                                    : p
+              <div className="insights-grid">
+                <details className="insight-block">
+                  <summary className="block-summary">
+                    <strong>Collaboration Inbox</strong>
+                    <span className="muted">{(activeProject?.joinRequests || []).length} pending</span>
+                  </summary>
+                  {(activeProject?.joinRequests || []).length === 0 ? (
+                    <p className="muted">No pending requests.</p>
+                  ) : (
+                    <div className="requests">
+                      {activeProject.joinRequests.map((req) => (
+                        <div key={req.id} className="request-item">
+                          <div>
+                            <strong>{req.name}</strong>
+                            <span>{req.code}</span>
+                          </div>
+                          <div className="buttons">
+                            <select
+                              className="role-select"
+                              value={req.role || 'viewer'}
+                              onChange={(e) => {
+                                const role = e.target.value
+                                setProjects((prev) =>
+                                  prev.map((p) =>
+                                    p.id === activeProject.id
+                                      ? {
+                                          ...p,
+                                          joinRequests: p.joinRequests.map((r) =>
+                                            r.id === req.id ? { ...r, role } : r
+                                          )
+                                        }
+                                      : p
+                                  )
                                 )
-                              )
-                            }}
-                            disabled={!canManage}
-                          >
-                            <option value="viewer">Viewer</option>
-                            <option value="suggester">Suggester</option>
-                            <option value="editor">Editor</option>
-                            <option value="admin">Administrator</option>
-                          </select>
-                          <button className="ghost small" onClick={() => handleRejectRequest(req.id)} disabled={!canManage}>
-                            Reject
-                          </button>
-                          <button className="primary small" onClick={() => handleAcceptRequest(req.id)} disabled={!canManage}>
-                            Accept
-                          </button>
+                              }}
+                              disabled={!canManage}
+                            >
+                              <option value="viewer">Viewer</option>
+                              <option value="suggester">Suggester</option>
+                              <option value="editor">Editor</option>
+                              <option value="admin">Administrator</option>
+                            </select>
+                            <button className="ghost small" onClick={() => handleRejectRequest(req.id)} disabled={!canManage}>
+                              Reject
+                            </button>
+                            <button className="primary small" onClick={() => handleAcceptRequest(req.id)} disabled={!canManage}>
+                              Accept
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </details>
-
-              <details className="insight-block">
-                <summary className="block-summary">
-                  <strong>Suggestions</strong>
-                  <span className="muted">{(activeProject?.suggestions || []).length} pending</span>
-                </summary>
-                {(activeProject?.suggestions || []).length === 0 ? (
-                  <p className="muted">No pending suggestions.</p>
-                ) : (
-                  <div className="requests">
-                    {activeProject.suggestions.map((suggestion) => (
-                      <div key={suggestion.id} className="request-item">
-                        <div>
-                          <strong>{suggestion.fromName}</strong>
-                          <span>
-                            {suggestion.kind === 'file'
-                              ? `File update: ${suggestion.filePath}`
-                              : 'Project update suggestion'}
-                          </span>
-                        </div>
-                        <div className="buttons">
-                          <button
-                            className="ghost small"
-                            onClick={() => rejectSuggestion(suggestion.id)}
-                            disabled={!canManage}
-                          >
-                            Reject
-                          </button>
-                          <button
-                            className="primary small"
-                            onClick={() => approveSuggestion(suggestion.id)}
-                            disabled={!canManage}
-                          >
-                            Apply
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </details>
-
-              <details className="insight-block">
-                <summary className="block-summary">
-                  <strong>Conflict Alerts</strong>
-                  <span className="muted">{(activeProject?.conflicts || []).length} active</span>
-                </summary>
-                {(activeProject?.conflicts || []).length === 0 ? (
-                  <p className="muted">No conflicts detected.</p>
-                ) : (
-                  <div className="requests">
-                    {activeProject.conflicts.map((conflict) => (
-                      <div key={conflict.id} className="request-item">
-                        <div>
-                          <strong>{conflict.kind === 'file' ? conflict.filePath : conflict.local.title}</strong>
-                          <span>
-                            {conflict.kind === 'file'
-                              ? 'File edits conflicted.'
-                              : 'Memory edits conflicted.'}
-                          </span>
-                        </div>
-                        <div className="buttons">
-                          <button
-                            className="ghost small"
-                            onClick={() => resolveConflict(conflict.id, 'local')}
-                            disabled={!canManage}
-                          >
-                            Keep local
-                          </button>
-                          <button
-                            className="ghost small"
-                            onClick={() => resolveConflict(conflict.id, 'incoming')}
-                            disabled={!canManage}
-                          >
-                            Use incoming
-                          </button>
-                          <button
-                            className="primary small"
-                            onClick={() => resolveConflictWithAI(conflict.id)}
-                            disabled={!canManage}
-                          >
-                            AI merge draft
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </details>
-
-              <div className="insight-block">
-                <h4>Team Chat</h4>
-                <div className="chat">
-                  {(activeProject?.chat || []).map((msg) => (
-                    <div key={msg.id} className="chat-line">
-                      <strong>{msg.author}</strong>
-                      <span>{msg.message}</span>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <form className="chat-input" onSubmit={handleSendChat}>
-                  <input
-                    placeholder="Message the team..."
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                  />
-                  <button className="primary small" type="submit">Send</button>
-                </form>
-              </div>
+                  )}
+                </details>
 
-              <div className="insight-block">
-                <h4>Retention</h4>
-                <p>
-                  Project Brain condenses memories older than {activeProject?.retention?.days ?? DEFAULT_RETENTION_DAYS} days
-                  or beyond {activeProject?.retention?.maxActiveNotes ?? MAX_ACTIVE_NOTES} active notes.
-                </p>
-                <button className="ghost" onClick={handleCondense}>Condense old context</button>
-              </div>
-
-              <div className="insight-block">
-                <h4>AI Instances</h4>
-                <div className="instances">
-                  {aiInstances.map((instance) => (
-                    <div key={instance.id} className={`instance ${instance.status}`}>
-                      <div>
-                        <strong>{instance.name}</strong>
-                        <p>{instance.role}</p>
-                      </div>
-                      <span className="state">{instance.status}</span>
+                <details className="insight-block">
+                  <summary className="block-summary">
+                    <strong>Suggestions</strong>
+                    <span className="muted">{(activeProject?.suggestions || []).length} pending</span>
+                  </summary>
+                  {(activeProject?.suggestions || []).length === 0 ? (
+                    <p className="muted">No pending suggestions.</p>
+                  ) : (
+                    <div className="requests">
+                      {activeProject.suggestions.map((suggestion) => (
+                        <div key={suggestion.id} className="request-item">
+                          <div>
+                            <strong>{suggestion.fromName}</strong>
+                            <span>
+                              {suggestion.kind === 'file'
+                                ? `File update: ${suggestion.filePath}`
+                                : 'Project update suggestion'}
+                            </span>
+                          </div>
+                          <div className="buttons">
+                            <button
+                              className="ghost small"
+                              onClick={() => rejectSuggestion(suggestion.id)}
+                              disabled={!canManage}
+                            >
+                              Reject
+                            </button>
+                            <button
+                              className="primary small"
+                              onClick={() => approveSuggestion(suggestion.id)}
+                              disabled={!canManage}
+                            >
+                              Apply
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
+                </details>
+
+                <details className="insight-block">
+                  <summary className="block-summary">
+                    <strong>Conflict Alerts</strong>
+                    <span className="muted">{(activeProject?.conflicts || []).length} active</span>
+                  </summary>
+                  {(activeProject?.conflicts || []).length === 0 ? (
+                    <p className="muted">No conflicts detected.</p>
+                  ) : (
+                    <div className="requests">
+                      {activeProject.conflicts.map((conflict) => (
+                        <div key={conflict.id} className="request-item">
+                          <div>
+                            <strong>{conflict.kind === 'file' ? conflict.filePath : conflict.local.title}</strong>
+                            <span>
+                              {conflict.kind === 'file'
+                                ? 'File edits conflicted.'
+                                : 'Memory edits conflicted.'}
+                            </span>
+                          </div>
+                          <div className="buttons">
+                            <button
+                              className="ghost small"
+                              onClick={() => resolveConflict(conflict.id, 'local')}
+                              disabled={!canManage}
+                            >
+                              Keep local
+                            </button>
+                            <button
+                              className="ghost small"
+                              onClick={() => resolveConflict(conflict.id, 'incoming')}
+                              disabled={!canManage}
+                            >
+                              Use incoming
+                            </button>
+                            <button
+                              className="primary small"
+                              onClick={() => resolveConflictWithAI(conflict.id)}
+                              disabled={!canManage}
+                            >
+                              AI merge draft
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </details>
+
+                <details className="insight-block">
+                  <summary className="block-summary">
+                    <strong>Team Chat</strong>
+                    <span className="muted">{(activeProject?.chat || []).length} msgs</span>
+                  </summary>
+                  <div className="chat">
+                    {(activeProject?.chat || []).map((msg) => (
+                      <div key={msg.id} className="chat-line">
+                        <strong>{msg.author}</strong>
+                        <span>{msg.message}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <form className="chat-input" onSubmit={handleSendChat}>
+                    <input
+                      placeholder="Message the team..."
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                    />
+                    <button className="primary small" type="submit">Send</button>
+                  </form>
+                </details>
+
+                <div className="insight-block">
+                  <h4>Retention</h4>
+                  <p>
+                    Project Brain condenses memories older than {activeProject?.retention?.days ?? DEFAULT_RETENTION_DAYS} days
+                    or beyond {activeProject?.retention?.maxActiveNotes ?? MAX_ACTIVE_NOTES} active notes.
+                  </p>
+                  <button className="ghost" onClick={handleCondense}>Condense old context</button>
                 </div>
-              </div>
 
-              <div className="insight-block">
-                <h4>Living Project Overview</h4>
-                <textarea className="overview" value={projectOverview} readOnly />
-                <p className="muted">
-                  This is the persistent, condensed context shared by collaborators and AI to avoid re-reading the entire repo.
-                </p>
-              </div>
+                <div className="insight-block">
+                  <h4>AI Instances</h4>
+                  <div className="instances">
+                    {aiInstances.map((instance) => (
+                      <div key={instance.id} className={`instance ${instance.status}`}>
+                        <div>
+                          <strong>{instance.name}</strong>
+                          <p>{instance.role}</p>
+                        </div>
+                        <span className="state">{instance.status}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-              <div className="insight-block">
-                <h4>AI Console</h4>
-                <p className="muted">
-                  Ask the project AI to explain, plan, or change files. (Host can apply edits directly to the project root.)
-                </p>
-                <div className="file-actions">
-                  <select
-                    className="role-select"
-                    value={aiConsoleScope}
-                    onChange={(e) => setAiConsoleScope(e.target.value)}
-                  >
-                    <option value="selected">Context: selected file</option>
-                    <option value="all">Context: many files (capped)</option>
-                  </select>
-                  <div className="buttons">
-                    <button
-                      className="primary small"
-                      onClick={runProjectAICommand}
-                      disabled={aiConsoleBusy || !aiPrompt.trim()}
+                <details className="insight-block span-2">
+                  <summary className="block-summary">
+                    <strong>Living Project Overview</strong>
+                    <span className="muted">summary</span>
+                  </summary>
+                  <textarea className="overview" value={projectOverview} readOnly />
+                  <p className="muted">
+                    This is the persistent, condensed context shared by collaborators and AI to avoid re-reading the entire repo.
+                  </p>
+                </details>
+
+                <details className="insight-block span-2">
+                  <summary className="block-summary">
+                    <strong>AI Console</strong>
+                    <span className="muted">edits via Workbench</span>
+                  </summary>
+                  <p className="muted">
+                    Ask the project AI to explain, plan, or change files. (Host can apply edits directly to the project root.)
+                  </p>
+                  <div className="file-actions">
+                    <select
+                      className="role-select"
+                      value={aiConsoleScope}
+                      onChange={(e) => setAiConsoleScope(e.target.value)}
                     >
-                      {aiConsoleBusy ? 'Running…' : 'Run AI'}
-                    </button>
-                  </div>
-                </div>
-                <textarea
-                  className="overview"
-                  value={aiPrompt}
-                  onChange={(e) => setAiPrompt(e.target.value)}
-                  placeholder="e.g. Update src/App.jsx to add a button that exports the file map as markdown."
-                />
-                {aiConsoleReply && (
-                  <div className="ai-reply">
-                    <strong>AI reply</strong>
-                    <pre>{aiConsoleReply}</pre>
-                  </div>
-                )}
-              </div>
-
-              <div className="insight-block">
-                <h4>File map</h4>
-                <div className="file-actions">
-                  <div className="file-root">
-                    <span className="muted">Project root</span>
-                    <strong>{activeProject?.projectRoot || 'Not set'}</strong>
-                  </div>
-                  <div className="buttons">
-                    <button className="ghost" onClick={handleSelectProjectRoot} disabled={!canManage}>Set Root</button>
-                    <button className="ghost" onClick={openNewFileModal} disabled={!canEdit}>
-                      New File
-                    </button>
-                    <button className="ghost" onClick={handleScanProject} disabled={!canEdit}>
-                      {isScanning ? 'Scanning…' : 'Scan Project'}
-                    </button>
-                  </div>
-                </div>
-                <ul>
-                  {(activeProject?.fileMap || []).map((file) => (
-                    <li key={file.id}>
+                      <option value="selected">Context: selected file</option>
+                      <option value="all">Context: many files (capped)</option>
+                    </select>
+                    <div className="buttons">
                       <button
-                        className="ghost small"
-                        onClick={() => handleLoadFile(file.path)}
-                        disabled={!canViewFiles}
+                        className="primary small"
+                        onClick={runProjectAICommand}
+                        disabled={aiConsoleBusy || !aiPrompt.trim()}
                       >
-                        Open
+                        {aiConsoleBusy ? 'Running…' : 'Run AI'}
                       </button>
-                      <span>{file.path} — {file.summary}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="file-editor">
-                  <div className="file-editor-header">
-                    <strong>{selectedFilePath || 'Select a file'}</strong>
-                    <button className="primary small" onClick={handleSaveFile} disabled={!canEdit || !selectedFilePath}>
-                      Save file
-                    </button>
+                    </div>
                   </div>
                   <textarea
-                    className="file-content"
-                    value={fileContent}
-                    onChange={(e) => setFileContent(e.target.value)}
-                    placeholder="File contents appear here..."
-                    disabled={!canViewFiles || !selectedFilePath}
-                    readOnly={!canEdit}
+                    className="overview"
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    placeholder="e.g. Update src/App.jsx to add a button that exports the file map as markdown."
                   />
-                  {fileStatus && <span className="muted">{fileStatus}</span>}
-                </div>
-              </div>
+                  {aiConsoleReply && (
+                    <div className="ai-reply">
+                      <strong>AI reply</strong>
+                      <pre>{aiConsoleReply}</pre>
+                    </div>
+                  )}
+                </details>
 
-              <div className="insight-block">
-                <h4>Change requests</h4>
-                <ul>
-                  {(activeProject?.changeRequests || []).map((req) => (
-                    <li key={req.id}>{req.title} · {req.status}</li>
-                  ))}
-                </ul>
+                <details className="insight-block span-2">
+                  <summary className="block-summary">
+                    <strong>File Map</strong>
+                    <span className="muted">{(activeProject?.fileMap || []).length} files</span>
+                  </summary>
+                  <div className="file-actions">
+                    <div className="file-root">
+                      <span className="muted">Project root</span>
+                      <strong>{activeProject?.projectRoot || 'Not set'}</strong>
+                    </div>
+                    <div className="buttons">
+                      <button className="ghost" onClick={handleSelectProjectRoot} disabled={!canManage}>Set Root</button>
+                      <button className="ghost" onClick={openNewFileModal} disabled={!canEdit}>
+                        New File
+                      </button>
+                      <button className="ghost" onClick={handleScanProject} disabled={!canEdit}>
+                        {isScanning ? 'Scanning…' : 'Scan Project'}
+                      </button>
+                    </div>
+                  </div>
+                  <ul>
+                    {(activeProject?.fileMap || []).map((file) => (
+                      <li key={file.id}>
+                        <button
+                          className="ghost small"
+                          onClick={() => handleLoadFile(file.path)}
+                          disabled={!canViewFiles}
+                        >
+                          Open
+                        </button>
+                        <span>{file.path} — {file.summary}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+
+                <details className="insight-block">
+                  <summary className="block-summary">
+                    <strong>Change Requests</strong>
+                    <span className="muted">{(activeProject?.changeRequests || []).length}</span>
+                  </summary>
+                  <ul>
+                    {(activeProject?.changeRequests || []).map((req) => (
+                      <li key={req.id}>{req.title} · {req.status}</li>
+                    ))}
+                  </ul>
+                </details>
               </div>
             </section>
           </div>
