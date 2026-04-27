@@ -636,6 +636,18 @@ function App() {
   const notes = activeProject?.notes || []
   const activeProjectRef = useRef(activeProject)
 
+  // Permission flags (must be defined before any hooks reference them).
+  const isSolo = collabRole === 'idle' || collabRole === 'offline'
+  const isHostLike = isSolo || collabRole === 'host'
+  const canEdit =
+    isSolo ||
+    collabRole === 'host' ||
+    localRole === 'editor' ||
+    localRole === 'admin' ||
+    localRole === 'suggester'
+  const canManage = isSolo || collabRole === 'host' || localRole === 'admin'
+  const canViewFiles = isSolo || collabRole === 'host' || collabRole === 'client'
+
   useEffect(() => {
     saveProjects(projects)
   }, [projects])
@@ -3494,21 +3506,6 @@ function App() {
       }
     ]
   }, [])
-
-  const isSolo = collabRole === 'idle' || collabRole === 'offline'
-  const isHostLike = isSolo || collabRole === 'host'
-
-  const canEdit =
-    isSolo ||
-    collabRole === 'host' ||
-    localRole === 'editor' ||
-    localRole === 'admin' ||
-    localRole === 'suggester'
-
-  const canManage =
-    isSolo || collabRole === 'host' || localRole === 'admin'
-
-  const canViewFiles = isSolo || collabRole === 'host' || collabRole === 'client'
 
   const moduleOptions = useMemo(() => {
     const modules = activeProject?.modules || []
